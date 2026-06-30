@@ -1,0 +1,14 @@
+[Unit]
+Description=IOT data producer
+Requires=broker.service
+After=broker.service
+
+[Service]
+Type=simple
+EnvironmentFile=-/etc/default/sensor
+ExecStart=/usr/bin/sensor
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

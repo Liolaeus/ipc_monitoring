@@ -1,0 +1,14 @@
+[Unit]
+Description=IOT data alerter
+Requires=broker.service
+After=broker.service
+
+[Service]
+Type=simple
+EnvironmentFile=-/etc/default/alerter
+ExecStart=/usr/bin/alerter
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

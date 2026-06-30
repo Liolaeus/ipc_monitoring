@@ -1,0 +1,10 @@
+version: "3"
+
+includes:
+  root:
+    taskfile: ../taskfile.yml
+    flatten: true
+
+tasks:
+  run:
+    cmd: cargo run

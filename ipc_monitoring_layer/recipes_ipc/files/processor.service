@@ -1,0 +1,14 @@
+[Unit]
+Description=IOT data processor
+Requires=broker.service
+After=broker.service
+
+[Service]
+Type=simple
+EnvironmentFile=-/etc/default/processor
+ExecStart=/usr/bin/processor
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
