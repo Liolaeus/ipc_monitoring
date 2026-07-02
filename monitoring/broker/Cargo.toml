@@ -1,0 +1,9 @@
+[package]
+name = "broker"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+common = { version = "0.1.0", path = "../common" }
+config = "0.15.25"
+rumqttd = "0.20.0"

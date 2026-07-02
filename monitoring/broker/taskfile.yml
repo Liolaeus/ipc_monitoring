@@ -1,0 +1,18 @@
+version: "3"
+
+includes:
+  common:
+    taskfile: ../taskfile.yml
+    internal: true
+
+tasks:
+  build:
+    desc: build broker
+    cmds:
+      - task: common:build
+
+  run:
+    desc: run broker
+    env:
+      RUMQTTD_CONF: ../../rumqttd.toml
+    cmd: cargo run

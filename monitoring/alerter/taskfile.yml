@@ -1,0 +1,17 @@
+version: "3"
+
+includes:
+  common:
+    taskfile: ../taskfile.yml
+    internal: true
+
+tasks:
+  build:
+    desc: build alerter
+    cmds:
+      - task: common:build
+
+  run:
+    desc: run alerter
+    cmds:
+      - task: common:run

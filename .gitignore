@@ -1,2 +1,7 @@
-target/
-yocto/
+monitoring/target/
+monitoring/rumqttd
+monitoring/oe-workdir/
+monitoring/oe-logs/
+
+yocto/bitbake
+yocto/bitbake-builds

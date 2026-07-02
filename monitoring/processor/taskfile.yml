@@ -1,0 +1,17 @@
+version: "3"
+
+includes:
+  common:
+    taskfile: ../taskfile.yml
+    internal: true
+
+tasks:
+  build:
+    desc: build processor
+    cmds:
+      - task: common:build
+
+  run:
+    desc: run processor
+    cmds:
+      - task: common:run

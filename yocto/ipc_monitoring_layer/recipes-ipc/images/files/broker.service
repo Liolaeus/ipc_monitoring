@@ -1,0 +1,13 @@
+[Unit]
+Description=IOT broker
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/broker
+EnvironmentFile=-/etc/default/broker
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

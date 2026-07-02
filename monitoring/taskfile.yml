@@ -1,0 +1,37 @@
+version: "3"
+
+tasks:
+  alerter:
+    desc: run alerter
+    cmd: task --dir ./alerter run
+
+  broker:
+    desc: run broker
+    cmd: task --dir ./broker run
+
+  processor:
+    desc: run processor
+    cmd: task --dir ./processor run
+
+  sensor:
+    desc: run sensor
+    cmd: task --dir ./sensor run
+
+  lint:
+    desc: lint all rust members
+    cmd: cargo +nightly fmt --all
+
+  format:
+    desc: format all rust members
+    cmd: cargo fix --allow-dirty
+
+# template tasks
+  build:
+    internal: true
+    desc: compile rust application
+    cmd: cargo build
+
+  run:
+    internal: true
+    desc: run compile application
+    cmd: cargo run
