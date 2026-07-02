@@ -1,6 +1,7 @@
 use std::time::Duration;
 
 use common::{TemperatureData, get_env_or};
+use log::{error, info};
 use rumqttc::{AsyncClient, ClientError, EventLoop, MqttOptions, QoS};
 use tokio::time::sleep;
 
@@ -21,7 +22,7 @@ async fn init_event_loop(conf: &SensorConfig) -> Result<(AsyncClient, EventLoop)
 }
 
 async fn publish_events(client: &AsyncClient) {
-    println!("[Sensor] Started publishing sensor data");
+    info!("Started publishing sensor data");
 
     loop {
         // randon temp
@@ -45,10 +46,10 @@ async fn publish_events(client: &AsyncClient) {
             .await
         {
             Ok(_) => {
-                println!("[Sensor] Sensed {:.2}°C", temp)
+                info!("Sensed {:.2}°C", temp);
             }
             Err(e) => {
-                eprintln!("[Sensor] Could not produce data: {}", e);
+                error!("Could not produce data: {}", e);
             }
         }
 
@@ -58,6 +59,10 @@ async fn publish_events(client: &AsyncClient) {
 
 #[tokio::main]
 async fn main() {
+    env_logger::Builder::from_default_env()
+        .filter_level(log::LevelFilter::Info)
+        .init();
+
     let conf = &SensorConfig {
         broker_ip: get_env_or("BROKER_IP", "127.0.0.1".to_string()),
         broker_port: get_env_or("BROKER_PORT", 1883),
@@ -71,19 +76,19 @@ async fn main() {
                     match evtloop.poll().await {
                         Ok(_) => {}
                         Err(e) => {
-                            eprintln!("[Sensor] Communication error: {e}");
-                            eprintln!("[Sensor] Retrying in 1 seconds");
+                            error!("Communication error: {e}");
+                            error!("Retrying in 1 second");
                             tokio::time::sleep(Duration::from_secs(1)).await;
                         }
                     }
                 }
             });
 
-            println!("[Sensor] Ready to read from broker.");
+            info!("Ready to read from broker");
             publish_events(&client).await;
         }
         Err(e) => {
-            eprintln!("[Sensor] Initialization failed: {}", e);
+            error!("Initialization failed: {}", e);
         }
     };
 }

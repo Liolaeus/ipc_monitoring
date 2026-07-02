@@ -1,6 +1,7 @@
 use std::time::Duration;
 
 use common::{TemperatureData, get_env_or};
+use log::{error, info};
 use rumqttc::{AsyncClient, ClientError, Event, EventLoop, MqttOptions, Packet, QoS};
 
 struct AlerterConfig {
@@ -30,14 +31,14 @@ async fn handle_alerts(mut eventloop: EventLoop, client: AsyncClient, conf: &Ale
         match eventloop.poll().await {
             // on connection error wait 1 sec and try again
             Err(e) => {
-                eprintln!("[Alerter] Communication error: {e}");
-                eprintln!("[Alerter] Retrying in 1 seconds");
+                error!("Communication error: {e}");
+                error!("Retrying in 1 second");
                 tokio::time::sleep(Duration::from_secs(1)).await;
             }
 
             // on connection initialization, subscribe to temperature
             Ok(Event::Incoming(Packet::ConnAck(_))) => {
-                println!("[Alerter] Connected to broker");
+                info!("Connected to broker");
                 client
                     .subscribe("sensors/temperature", QoS::AtLeastOnce)
                     .await
@@ -50,7 +51,7 @@ async fn handle_alerts(mut eventloop: EventLoop, client: AsyncClient, conf: &Ale
                     count += 1.0;
 
                     match postcard::from_bytes::<TemperatureData>(&publish.payload) {
-                        Err(e) => eprintln!("[Alerter] Error parsing message: {}", e),
+                        Err(e) => error!("Error parsing message: {}", e),
 
                         Ok(data) => {
                             if temp_range.contains(&data.temperature) {
@@ -58,9 +59,8 @@ async fn handle_alerts(mut eventloop: EventLoop, client: AsyncClient, conf: &Ale
                             }
 
                             errors += 1.0;
-                            println!(
-                                "[Alerter] Abnormal temperature detected: {:.2}°C | error rate: \
-                                 {:.2}%",
+                            info!(
+                                "Abnormal temperature detected: {:.2}°C | error rate: {:.2}%",
                                 data.temperature,
                                 (errors / count) * 100.0
                             );
@@ -74,6 +74,10 @@ async fn handle_alerts(mut eventloop: EventLoop, client: AsyncClient, conf: &Ale
 
 #[tokio::main]
 async fn main() {
+    env_logger::Builder::from_default_env()
+        .filter_level(log::LevelFilter::Info)
+        .init();
+
     let conf = &AlerterConfig {
         broker_ip: get_env_or("BROKER_IP", "127.0.0.1".to_string()),
         broker_port: get_env_or("BROKER_PORT", 1883),
@@ -83,11 +87,11 @@ async fn main() {
 
     match init_event_loop(conf).await {
         Ok((client, evtloop)) => {
-            println!("[Alerter] Ready to read from broker.");
+            info!("Ready to read from broker");
             handle_alerts(evtloop, client, conf).await;
         }
         Err(e) => {
-            eprintln!("[Alerter] Initialization failed: {}", e);
+            error!("Initialization failed: {}", e);
             return;
         }
     };

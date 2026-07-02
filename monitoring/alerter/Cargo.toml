@@ -5,6 +5,8 @@ edition = "2021"
 
 [dependencies]
 common = { version = "0.1.0", path = "../common" }
+env_logger = "0.11"
+log = "0.4"
 postcard = "1.1.3"
 rumqttc = "0.25.1"
 tokio = { version = "1.52.3", features = ["full"] }
