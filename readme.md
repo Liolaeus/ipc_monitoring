@@ -20,8 +20,7 @@ The project contains four Rust services:
 For the Yocto build flow, you also need a standard Yocto build host with common build tools such as:
 - Python 3
 - git
-- make, gcc, g++, tar, gzip, bzip2, wget
-- the usual host packages required by bitbake and Poky
+- the usual packages required by bitbake and Poky
 
 ## Repository layout
 
@@ -48,9 +47,9 @@ task run
 
 The services use environment variables with default values:
 
-- BROKER_IP and BROKER_PORT for the client services (default: 127.0.0.1:1883)
-- RUMQTTD_CONF config file path for the broker (default: rumqttd.toml)
-- BOUND_LOW and BOUND_HIGH for alerter (default: -10 and 150)
+- `BROKER_IP` and `BROKER_PORT` for the client services (default: `127.0.0.1:1883`)
+- `RUMQTTD_CONF` config file path for the broker (default: `rumqttd.toml`)
+- `BOUND_LOW` and `BOUND_HIGH` for alerter (default: `-10` and `150`)
 
 ## Yocto build flow
 
